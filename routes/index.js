@@ -1,9 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const { Router } = require('express')
+const authRoutes = require('./authRoutes')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express CI/CD' });
-});
+const router = Router()
 
-module.exports = router;
+router.get('/test', (req, res) => {
+  res.json({message: 'Response'})
+})
+
+router.use('/users', authRoutes)
+
+module.exports = router
