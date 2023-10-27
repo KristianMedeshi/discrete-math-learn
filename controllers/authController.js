@@ -1,31 +1,34 @@
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const User = require('../models/User')
-const SECRET = process.env.JWT_SECRET
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-module.exports.signup = async (req, res) => {
+const SECRET = process.env.JWT_SECRET;
+
+module.exports.signUp = async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const {
+      email, password, firstName, lastName,
+    } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        return res.status(400).json({ error: 'User with the same email already exists' });
+      return res.status(400).json({ error: 'User with the same email already exists' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
       password: hashedPassword,
       firstName,
-      lastName
+      lastName,
     });
     await newUser.save();
     res.status(201).json({ message: 'User has been created successfully' });
-    } catch (err) {
-      console.error('Signup error:', err);
-      res.status(500).json({ error: 'Server error' });
-    }
-}
+  } catch (err) {
+    console.error('Signup error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
 
-module.exports.signin = async (req, res) => {
+module.exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -42,4 +45,4 @@ module.exports.signin = async (req, res) => {
     console.error('Auth error:', err);
     res.status(500).json({ error: 'Server error' });
   }
-}
+};
