@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "lint:check": "eslint . --ext js,js --report-unused-disable-directives --max-warnings 0",
+    "lint:check": "eslint . --ext js --report-unused-disable-directives --max-warnings 0",
     "lint": "npm run lint:check -- --fix"
   },
   "dependencies": {
@@ -20,6 +20,8 @@
     "mongodb-connection-string-url": "^2.6.0",
     "mongoose": "^7.5.4",
     "morgan": "~1.9.1",
+    "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7",
     "pm2": "^5.3.0"
   },
   "devDependencies": {

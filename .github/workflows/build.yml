@@ -47,7 +47,7 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
         chmod 400 key.pem
         ssh -i key.pem ${{secrets.USERNAME}}@${{secrets.HOST_DNS}} -p 22 '
-        cd discrete-math-learn
-        npm install
-        sudo kill $(sudo lsof -t -i:3000)
+        pm2 kill
+        cd /home/ec2-user/discrete-math-learn/
+        pm2 start npm --name "discrete-math-learn" -- start -- --port 3000
         '
