@@ -49,6 +49,9 @@ module.exports.createAnswer = async (req, res) => {
     const { answersId } = req.params;
     const { answer } = req.body;
     const answersDoc = await Answers.findById(answersId);
+    if (!answersDoc) {
+      return res.status(404).json({ error: 'Answers not found' });
+    }
     answersDoc.answers.push({ answer, authorId });
     await answersDoc.save();
     res.status(201).json({ message: 'Answer has been added successfully' });
@@ -58,10 +61,13 @@ module.exports.createAnswer = async (req, res) => {
   }
 };
 
-module.exports.getQuestionDetails = async (req, res) => {
+module.exports.getQuestionAnswers = async (req, res) => {
   try {
     const { questionId } = req.params;
     const question = await Question.findById(questionId);
+    if (!question) {
+      return res.status(404).json({ error: 'Question not found' });
+    }
     const { answers } = await Answers.findById(question.answers);
     const answersWithAuthor = await Promise.all(answers.map(async (answer) => {
       const author = await User.findById(answer.authorId);
