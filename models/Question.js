@@ -3,17 +3,17 @@ const validTags = require('../constants/tags');
 
 const questionSchema = new Schema(
   {
+    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true },
+    description: { type: String, required: true },
     tags: {
       type: [String],
       enum: validTags,
       default: [],
     },
-    authorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    details: { type: String, required: true },
-    answers: { type: Schema.Types.ObjectId, ref: 'Answers', required: true },
+    details: { type: Schema.Types.ObjectId, ref: 'QuestionDetails', required: true },
   },
-  { timestamps: true },
+  { collection: 'questions', timestamps: true },
 );
 
 module.exports = mongoose.model('Question', questionSchema);

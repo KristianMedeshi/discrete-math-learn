@@ -5,8 +5,8 @@ const router = Router();
 
 router.get('/', forumController.getQuestions);
 router.post('/', forumController.createQuestion);
-router.get('/:questionId', forumController.getQuestionAnswers);
-router.post('/answers/:answersId', forumController.createAnswer);
-// router.get('/answer/:answerId', forumController.getAnswer);
+router.get('/:id', forumController.getQuestionDetails);
+router.post('/:id', forumController.createAnswer);
+router.get('/answer/:id', forumController.getAnswer);
 
 module.exports = router;

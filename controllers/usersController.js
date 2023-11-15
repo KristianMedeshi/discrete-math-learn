@@ -14,13 +14,12 @@ module.exports.signUp = async (req, res) => {
       return res.status(400).json({ error: 'User with the same email already exists' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
+    await User.create({
       email,
       password: hashedPassword,
       firstName,
       lastName,
     });
-    await newUser.save();
     res.status(201).json({ message: 'User has been created successfully' });
   } catch (err) {
     console.error('Signup error:', err);
@@ -39,7 +38,7 @@ module.exports.signIn = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Wrong name or password' });
     }
-    const token = jwt.sign({ userId: user._id }, SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '24h' });
     res.status(200).json({ token });
   } catch (err) {
     console.error('Auth error:', err);
