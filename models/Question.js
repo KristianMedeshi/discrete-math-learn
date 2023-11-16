@@ -11,7 +11,6 @@ const questionSchema = new Schema(
       enum: validTags,
       default: [],
     },
-    details: { type: Schema.Types.ObjectId, ref: 'QuestionDetails', required: true },
   },
   { collection: 'questions', timestamps: true },
 );

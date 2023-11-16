@@ -7,7 +7,7 @@ const SECRET = process.env.JWT_SECRET;
 module.exports.signUp = async (req, res) => {
   try {
     const {
-      email, password, firstName, lastName,
+      email, password, name,
     } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -17,8 +17,7 @@ module.exports.signUp = async (req, res) => {
     await User.create({
       email,
       password: hashedPassword,
-      firstName,
-      lastName,
+      name,
     });
     res.status(201).json({ message: 'User has been created successfully' });
   } catch (err) {
