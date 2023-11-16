@@ -16,7 +16,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       validate: {
-        validator: (value) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(value),
+        validator: (value) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/i.test(value),
         message: () => 'Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.',
       },
     },
