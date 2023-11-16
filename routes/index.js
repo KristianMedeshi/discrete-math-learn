@@ -8,6 +8,9 @@ const router = Router();
 
 router.use('/', usersRoutes);
 router.use('/forum', authMiddleware, forumRoutes);
-router.post('/upload', authMiddleware, uploadMiddleware.single('file'));
+router.post('/upload', uploadMiddleware.single('file'), (req, res) => {
+  const filePath = `${req.protocol}://${req.get('host')}/${req.file.path}`;
+  res.status(201).send({ message: 'File uploaded successfully', path: filePath });
+});
 
 module.exports = router;
