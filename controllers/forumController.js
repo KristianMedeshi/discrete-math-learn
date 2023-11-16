@@ -11,7 +11,8 @@ module.exports.createQuestion = async (req, res) => {
     res.status(201).json({ message: 'Question has been created successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+
   }
 };
 
@@ -26,7 +27,8 @@ module.exports.getQuestions = async (req, res) => {
     res.status(200).json(questions);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+
   }
 };
 
@@ -36,7 +38,8 @@ module.exports.getQuestions = async (req, res) => {
 //     res.status(200).json();
 //   } catch (error) {
 //     console.error(error);
-//     res.status(500).json({ error: 'Server error' });
+//     res.status(500).json({ error: 'Internal server error', details: error.message });
+
 //   }
 // };
 
@@ -55,7 +58,8 @@ module.exports.getQuestionAnswers = async (req, res) => {
     res.status(200).json({ question, answers });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+
   }
 };
 
@@ -66,7 +70,8 @@ module.exports.getAnswer = async (req, res) => {
     res.status(200).json(answer);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+
   }
 };
 
@@ -83,6 +88,7 @@ module.exports.createAnswer = async (req, res) => {
     res.status(201).json({ message: 'Answer has been added successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+
   }
 };
