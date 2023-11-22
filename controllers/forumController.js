@@ -12,7 +12,6 @@ module.exports.createQuestion = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
-
   }
 };
 
@@ -22,13 +21,12 @@ module.exports.getQuestions = async (req, res) => {
       .select('-details')
       .populate([{
         path: 'author',
-        transform: (doc, id) => (doc == null ? id : doc.fullName),
+        transform: (doc, id) => (doc === null ? id : doc.getInfo(req)),
       }]);
     res.status(200).json(questions);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
-
   }
 };
 
@@ -53,13 +51,12 @@ module.exports.getQuestionAnswers = async (req, res) => {
     const answers = await Answer.find({ question: id }).populate({
       path: 'author',
       // eslint-disable-next-line no-shadow
-      transform: (doc, id) => (doc == null ? id : doc.fullName),
+      transform: (doc, id) => (doc === null ? id : doc.getInfo(req)),
     });
     res.status(200).json({ question, answers });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
-
   }
 };
 
@@ -71,7 +68,6 @@ module.exports.getAnswer = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
-
   }
 };
 
@@ -89,6 +85,5 @@ module.exports.createAnswer = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
-
   }
 };
