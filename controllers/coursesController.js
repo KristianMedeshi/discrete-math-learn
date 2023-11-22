@@ -1,5 +1,6 @@
 const Course = require('../models/Course');
 const difficultyLevels = require('../constants/difficultyLevels');
+const getFullPath = require('../utils/getFullPath');
 
 module.exports.getCourses = async (req, res) => {
   try {
@@ -20,10 +21,10 @@ module.exports.getCourses = async (req, res) => {
       .limit(limit)
       .populate([{
         path: 'author',
-        transform: (doc, id) => (doc === null ? id : doc.fullName),
+        transform: (doc, id) => (doc === null ? id : doc.getInfo(req)),
       }]);
     courses.forEach((course) => {
-      course.image = `${req.protocol}://${req.get('host')}/${course.image}`;
+      course.image = getFullPath(req, course.image);
     });
     res.status(200).json({ courses, resultsLength });
   } catch (error) {

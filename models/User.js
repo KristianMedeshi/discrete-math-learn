@@ -1,4 +1,5 @@
 const { mongoose, Schema } = require('mongoose');
+const getFullPath = require('../utils/getFullPath');
 
 const userSchema = new Schema(
   {
@@ -25,14 +26,10 @@ const userSchema = new Schema(
       last: { type: String, required: true },
     },
     card: {
-      name: {
-        first: { type: String },
-        last: { type: String },
-      },
       number: {
-        type: Number,
+        type: String,
         validate: {
-          validator: (value) => /^\d{16}$/.test(value),
+          validator: (value) => /^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/.test(value),
           message: (props) => `${props.value} is not a valid card number!`,
         },
       },
@@ -51,13 +48,23 @@ const userSchema = new Schema(
         },
       },
     },
+    image: { type: String, default: 'uploads/1700510085788.jpg' },
   },
   {
+    toJSON: { virtuals: true },
     virtuals: {
       fullName: {
         get() {
           return `${this.name.first} ${this.name.last}`;
         },
+      },
+    },
+    methods: {
+      getInfo(req) {
+        return {
+          fullName: `${this.name.first} ${this.name.last}`,
+          image: getFullPath(req, this.image),
+        };
       },
     },
     collection: 'users',
