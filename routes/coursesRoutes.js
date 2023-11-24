@@ -7,5 +7,6 @@ const router = Router();
 
 router.get('/', coursesController.getCourses);
 router.post('/', authMiddleware, uploadMiddleware.single('file'), coursesController.createCourse);
+router.get('/:id', authMiddleware, coursesController.getCourse);
 
 module.exports = router;
