@@ -1,5 +1,5 @@
 const { mongoose, Schema } = require('mongoose');
-const validTags = require('../constants/tags');
+const validTags = require('../constants/validTags');
 
 const questionSchema = new Schema(
   {
