@@ -30,17 +30,6 @@ module.exports.getQuestions = async (req, res) => {
   }
 };
 
-// module.exports.deleteQuestion = async (req, res) => {
-//   try {
-//     const { userId } = req.user;
-//     res.status(200).json();
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal server error', details: error.message });
-
-//   }
-// };
-
 module.exports.getQuestionAnswers = async (req, res) => {
   try {
     const { id } = req.params;
