@@ -91,3 +91,39 @@ module.exports.buyCourse = async (req, res) => {
     res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 };
+
+module.exports.createCourseBlock = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const courseId = req.params.id;
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ error: 'Course not found' });
+    }
+    console.log(course.author, userId);
+    if (course.author.toString() !== userId) {
+      return res.status(403).json({ error: 'You are not the author of this course' });
+    }
+    const data = JSON.parse(req.body.jsonData);
+    data.course = courseId;
+    data.attachments = req.files?.map((file) => file.path);
+    const newCourseBlock = new CourseBlock(data);
+    await newCourseBlock.save();
+    res.status(201).json({ message: 'Course block has been created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+};
+
+module.exports.getCourseBlock = async (req, res) => {
+  try {
+    const { blockId } = req.params;
+    const block = await CourseBlock.findById(blockId);
+    block.attachments = block.attachments.map((attachment) => getFullPath(req, attachment));
+    res.status(200).json({ block });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+};

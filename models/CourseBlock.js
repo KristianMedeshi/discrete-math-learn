@@ -5,12 +5,12 @@ const courseBlockSchema = new Schema(
     course: {
       type: Schema.Types.ObjectId, ref: 'Course', required: true, index: true,
     },
-    title: { type: String, required: false },
+    title: { type: String, required: true },
     lecture: { type: String },
     tasks: {
       type: [{
-        title: { type: String, required: false },
-        answer: { type: String, required: false },
+        title: { type: String, required: true },
+        answer: { type: String, required: true },
       }],
     },
     tests: {
