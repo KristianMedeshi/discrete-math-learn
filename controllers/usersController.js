@@ -8,7 +8,7 @@ const SECRET = process.env.JWT_SECRET;
 module.exports.signUp = async (req, res) => {
   try {
     const { email, password, name } = req.body;
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }, { _id: true }).lean();
     if (existingUser) {
       return res.status(400).json({ error: 'User with the same email already exists' });
     }
@@ -30,7 +30,7 @@ module.exports.signUp = async (req, res) => {
 module.exports.signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }, { password: true, _id: true }).lean();
     if (!user) {
       return res.status(401).json({ error: 'Wrong name or password' });
     }
