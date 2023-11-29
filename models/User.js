@@ -49,6 +49,17 @@ const userSchema = new Schema(
       },
     },
     image: { type: String, default: 'uploads/1700510085788.jpg' },
+    courses: {
+      type: [{
+        id: {
+          type: Schema.Types.ObjectId, ref: 'Course', required: true,
+        },
+        passedBlocks: [{
+          type: Schema.Types.ObjectId, ref: 'CourseBlock', required: true,
+        }],
+      }],
+      default: [],
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -65,6 +76,23 @@ const userSchema = new Schema(
           fullName: `${this.name.first} ${this.name.last}`,
           image: getFullPath(req, this.image),
         };
+      },
+      addToCourses(courseId, passedBlocks = []) {
+        const existingCourseIndex = this.courses.findIndex((course) => course.id.equals(courseId));
+        if (existingCourseIndex !== -1) {
+          const existingCourse = this.courses[existingCourseIndex];
+          const newPassedBlocks = [...existingCourse.passedBlocks, ...passedBlocks];
+          this.courses[existingCourseIndex].passedBlocks = [...new Set(newPassedBlocks)];
+        } else {
+          this.courses.push({
+            id: courseId,
+            passedBlocks,
+          });
+        }
+      },
+      hasPassedBlock(courseId, blockId) {
+        const course = this.courses.find((item) => item.id.equals(courseId));
+        return course && course.passedBlocks.some((passedBlock) => passedBlock.equals(blockId));
       },
     },
     collection: 'users',
