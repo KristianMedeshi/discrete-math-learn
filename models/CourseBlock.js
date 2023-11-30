@@ -20,7 +20,12 @@ const courseBlockSchema = new Schema(
         correctOptionIndex: { type: Number },
       }],
     },
-    attachments: { type: [String] },
+    attachments: {
+      type: [{
+        path: { type: String, required: true },
+        originalName: { type: String, required: true },
+      }],
+    },
   },
   { collection: 'courseBlocks' },
 );
