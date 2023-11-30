@@ -15,9 +15,7 @@ const courseSchema = new Schema(
     },
     level: { type: String, enum: validLevels, required: true },
     image: { type: String, required: true },
-    usersBought: [{
-      type: Schema.Types.ObjectId, ref: 'User', default: [], select: false,
-    }],
+    usersBought: [String],
   },
   {
     collection: 'courses',
