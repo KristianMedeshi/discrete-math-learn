@@ -11,5 +11,6 @@ router.get('/:id', authMiddleware, coursesController.getCourse);
 router.post('/:id', authMiddleware, uploadMiddleware.array('attachments'), coursesController.createCourseBlock);
 router.post('/buy/:id', authMiddleware, coursesController.buyCourse);
 router.get('/:courseId/:blockId', authMiddleware, coursesController.getCourseBlock);
+router.post('/mark/:id', authMiddleware, coursesController.markCourseBlock);
 
 module.exports = router;
