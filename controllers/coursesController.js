@@ -94,7 +94,7 @@ module.exports.getCourse = async (req, res) => {
 module.exports.buyCourse = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).select('card').lean();
+    const user = await User.findById(userId).select('card');
     if (!user || !user.card || !user.card.number || !user.card.cvv || !user.card.expiry) {
       return res.status(400).json({ error: 'User does not have a valid card' });
     }
@@ -110,6 +110,7 @@ module.exports.buyCourse = async (req, res) => {
       return res.status(404).json({ error: 'Course not found' });
     }
     user.addToCourses(courseId);
+    await user.save();
     res.status(200).json({ message: 'Course purchased successfully' });
   } catch (error) {
     console.error(error);

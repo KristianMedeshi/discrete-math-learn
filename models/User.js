@@ -58,7 +58,7 @@ const userSchema = new Schema(
           type: Schema.Types.ObjectId, ref: 'CourseBlock', required: true,
         }],
       }],
-      default: [],
+      get: (value) => value ?? [],
     },
   },
   {
@@ -78,8 +78,8 @@ const userSchema = new Schema(
         };
       },
       addToCourses(courseId, passedBlocks = []) {
-        const existingCourseIndex = this.courses.findIndex((course) => course.id.equals(courseId));
-        if (existingCourseIndex !== -1) {
+        const existingCourseIndex = this.courses?.findIndex((course) => course.id.equals(courseId));
+        if (existingCourseIndex && existingCourseIndex !== -1) {
           const existingCourse = this.courses[existingCourseIndex];
           const newPassedBlocks = [...existingCourse.passedBlocks, ...passedBlocks];
           this.courses[existingCourseIndex].passedBlocks = [...new Set(newPassedBlocks)];
