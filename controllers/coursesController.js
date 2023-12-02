@@ -7,9 +7,9 @@ const getFullPath = require('../utils/getFullPath');
 module.exports.getCourses = async (req, res) => {
   try {
     const userId = req.user?.id;
-    const {
-      skip, limit, name, levels, durationRange,
-    } = req.query;
+    const { name, levels, durationRange } = req.query;
+    const skip = req.query.skip || 0;
+    const limit = req.query.limit || 10;
     const filter = {
       level: { $in: levels ?? validLevels },
       duration: {
@@ -64,6 +64,7 @@ module.exports.createCourse = async (req, res) => {
     await newCourse.save();
     const user = await User.findById(author);
     user.addToCourses(newCourse._id);
+    await user.save();
     res.status(201).json({ message: 'Course has been created successfully', id: newCourse._id });
   } catch (error) {
     console.error(error);
@@ -94,7 +95,8 @@ module.exports.getCourse = async (req, res) => {
 module.exports.buyCourse = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).select('card');
+    const user = await User.findById(userId).select('courses card');
+    console.log(user);
     if (!user || !user.card || !user.card.number || !user.card.cvv || !user.card.expiry) {
       return res.status(400).json({ error: 'User does not have a valid card' });
     }
@@ -110,6 +112,7 @@ module.exports.buyCourse = async (req, res) => {
       return res.status(404).json({ error: 'Course not found' });
     }
     user.addToCourses(courseId);
+    console.log('save', user);
     await user.save();
     res.status(200).json({ message: 'Course purchased successfully' });
   } catch (error) {
@@ -196,6 +199,36 @@ module.exports.markCourseBlock = async (req, res) => {
     } else {
       res.status(200).json({ message: 'Course block not completed, answers were incorrect', correct, total });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+};
+
+module.exports.getMyCourses = async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 9;
+    const user = await User.findById(req.user.id).select('courses').lean();
+    const totalCount = user.courses?.length;
+    if (!user.courses) {
+      return res.status(200).json({ courses: [], totalCount });
+    }
+    const courses = await Promise.all(
+      user.courses
+        .slice(skip, skip + limit)
+        .map(async (item) => {
+          const course = await Course.findById(item.course).lean();
+          const total = await CourseBlock.find({ course: item.course }).countDocuments();
+          return {
+            ...course,
+            image: getFullPath(req, course.image),
+            passed: item.passedBlocks?.length ?? 0,
+            total,
+          };
+        }),
+    );
+    res.status(200).json({ courses, totalCount });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
