@@ -33,7 +33,7 @@ module.exports.signIn = async (req, res) => {
     return res.status(401).json({ error: 'Wrong name or password' });
   }
   const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: '24h' });
-  res.status(200).json({ token });
+  res.status(200).json({ token, userId: user._id });
 };
 
 module.exports.getMyInfo = async (req, res) => {
