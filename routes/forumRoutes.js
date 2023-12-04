@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const Router = require('express-promise-router');
 const forumController = require('../controllers/forumController');
 
 const router = Router();

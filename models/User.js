@@ -51,14 +51,13 @@ const userSchema = new Schema(
     image: { type: String, default: 'uploads/1700510085788.jpg' },
     courses: {
       type: [{
-        id: {
+        course: {
           type: Schema.Types.ObjectId, ref: 'Course', required: true,
         },
         passedBlocks: [{
           type: Schema.Types.ObjectId, ref: 'CourseBlock', required: true,
         }],
       }],
-      get: (value) => value ?? [],
     },
   },
   {
@@ -78,20 +77,18 @@ const userSchema = new Schema(
         };
       },
       addToCourses(courseId, passedBlocks = []) {
-        const existingCourseIndex = this.courses?.findIndex((course) => course.id.equals(courseId));
-        if (existingCourseIndex && existingCourseIndex !== -1) {
-          const existingCourse = this.courses[existingCourseIndex];
-          const newPassedBlocks = [...existingCourse.passedBlocks, ...passedBlocks];
-          this.courses[existingCourseIndex].passedBlocks = [...new Set(newPassedBlocks)];
+        if (!this.courses) {
+          this.courses = [];
+        }
+        const course = this.courses.find((item) => item.course.equals(courseId));
+        if (course) {
+          course.passedBlocks = course.passedBlocks.concat(passedBlocks);
         } else {
-          this.courses.push({
-            id: courseId,
-            passedBlocks,
-          });
+          this.courses.push({ course: courseId, passedBlocks });
         }
       },
       hasPassedBlock(courseId, blockId) {
-        const course = this.courses.find((item) => item.id.equals(courseId));
+        const course = this.courses?.find((item) => item.course.equals(courseId));
         return course && course.passedBlocks.some((passedBlock) => passedBlock.equals(blockId));
       },
     },

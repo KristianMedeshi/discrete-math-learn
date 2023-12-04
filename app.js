@@ -27,10 +27,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', router);
+app.use(router);
 
 // error handler
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
