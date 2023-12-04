@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const Router = require('express-promise-router');
 const authMiddleware = require('../middleware/authMiddleware');
 const uploadMiddleware = require('../middleware/uploadMiddleware');
 const usersRoutes = require('./usersRoutes');
@@ -14,6 +14,11 @@ router.use('/courses', coursesRoutes);
 router.post('/upload', uploadMiddleware.single('file'), (req, res) => {
   const filePath = getFullPath(req, req.file.path);
   res.status(201).send({ message: 'File uploaded successfully', path: filePath });
+});
+
+// eslint-disable-next-line no-unused-vars
+router.use((err, req, res, next) => {
+  res.status(500).json({ message: 'Internal server error' });
 });
 
 module.exports = router;
