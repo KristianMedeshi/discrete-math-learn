@@ -1,4 +1,4 @@
-const { Router } = require('express');
+const Router = require('express-promise-router');
 const authMiddleware = require('../middleware/authMiddleware');
 const uploadMiddleware = require('../middleware/uploadMiddleware');
 const coursesController = require('../controllers/coursesController');
