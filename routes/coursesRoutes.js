@@ -1,17 +1,18 @@
 const Router = require('express-promise-router');
-const authMiddleware = require('../middleware/authMiddleware');
-const uploadMiddleware = require('../middleware/uploadMiddleware');
+const auth = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
+const expandFlatBody = require('../middleware/expandFlatBodyMiddleware');
 const coursesController = require('../controllers/coursesController');
 
 const router = Router();
 
 router.get('/', coursesController.getCourses);
-router.post('/', authMiddleware, uploadMiddleware.single('file'), coursesController.createCourse);
-router.get('/my', authMiddleware, coursesController.getMyCourses);
-router.get('/:id', authMiddleware, coursesController.getCourse);
-router.post('/:id', authMiddleware, uploadMiddleware.array('attachments'), coursesController.createCourseBlock);
-router.post('/buy/:id', authMiddleware, coursesController.buyCourse);
-router.get('/:courseId/:blockId', authMiddleware, coursesController.getCourseBlock);
-router.post('/mark/:id', authMiddleware, coursesController.markCourseBlock);
+router.post('/', auth, upload.single('file'), coursesController.createCourse);
+router.get('/my', auth, coursesController.getMyCourses);
+router.get('/:id', auth, coursesController.getCourse);
+router.post('/:id', auth, upload.array('attachments'), coursesController.createCourseBlock);
+router.post('/buy/:id', auth, coursesController.buyCourse);
+router.get('/:courseId/:blockId', auth, coursesController.getCourseBlock);
+router.post('/mark/:id', auth, coursesController.markCourseBlock);
 
 module.exports = router;
