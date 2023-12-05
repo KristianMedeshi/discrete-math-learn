@@ -11,14 +11,12 @@ module.exports.signUp = async (req, res) => {
   if (existingUser) {
     return res.status(400).json({ error: 'User with the same email already exists' });
   }
-  const newUser = new User({
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await User.create({
     email,
-    password,
+    password: hashedPassword,
     name,
   });
-  await newUser.validate();
-  newUser.password = await bcrypt.hash(password, 10);
-  await newUser.save();
   res.status(201).json({ message: 'User has been created successfully' });
 };
 
@@ -38,19 +36,17 @@ module.exports.signIn = async (req, res) => {
 
 module.exports.getMyInfo = async (req, res) => {
   const { id } = req.user;
-  const user = await User.findById(id);
+  const user = await User.findById(id).select('-password -courses');
   user.image = getFullPath(req, user.image);
   res.status(200).json({ user });
 };
 
 module.exports.updateMyInfo = async (req, res) => {
   const { id } = req.user;
-  const data = JSON.parse(req.body.jsonData);
+  const data = req.body;
   const user = await User.findById(id);
-  const newImage = req.file;
-  delete data.image;
-  if (newImage) {
-    data.image = newImage.path;
+  if (req.file) {
+    data.image = req.file.path;
   }
   if (data?.currentPassword && data?.newPassword) {
     if (!bcrypt.compare(data.currentPassword, user.password)) {
