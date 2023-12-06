@@ -1,7 +1,6 @@
 const Router = require('express-promise-router');
 const auth = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
-const expandFlatBody = require('../middleware/expandFlatBodyMiddleware');
 const coursesController = require('../controllers/coursesController');
 
 const router = Router();

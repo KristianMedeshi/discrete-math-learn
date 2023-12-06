@@ -7,15 +7,11 @@ const userSchema = new Schema(
       type: String, required: true, index: true, unique: true,
     },
     password: { type: String, required: true },
-    name: {
-      first: { type: String, required: true },
-      last: { type: String, required: true },
-    },
-    card: {
-      number: { type: String },
-      cvv: { type: Number },
-      expiry: { type: String },
-    },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    cardNumber: { type: String },
+    cardCvv: { type: Number },
+    cardExpiry: { type: String },
     image: { type: String, default: 'uploads/1700510085788.jpg' },
     courses: {
       type: [{
@@ -33,14 +29,14 @@ const userSchema = new Schema(
     virtuals: {
       fullName: {
         get() {
-          return `${this.name.first} ${this.name.last}`;
+          return `${this.firstName} ${this.lastName}`;
         },
       },
     },
     methods: {
       getInfo(req) {
         return {
-          fullName: `${this.name.first} ${this.name.last}`,
+          fullName: `${this.firstName} ${this.lastName}`,
           image: getFullPath(req, this.image),
         };
       },

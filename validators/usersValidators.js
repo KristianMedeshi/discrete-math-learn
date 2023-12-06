@@ -1,13 +1,16 @@
 const Joi = require('joi');
 
+const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+const passwordMessage = 'Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.';
+
 module.exports.signUp = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2 })
     .required(),
 
   password: Joi.string()
-    .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
-    .message('Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.')
+    .pattern(passwordPattern)
+    .message(passwordMessage)
     .required(),
 
   name: Joi.object({
@@ -15,18 +18,16 @@ module.exports.signUp = Joi.object({
     last: Joi.string().required(),
   }),
 
-  card: Joi.object({
-    number: Joi.string()
-      .pattern(/^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/),
+  cardNumber: Joi.string()
+    .pattern(/^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/),
 
-    cvv: Joi.number()
-      .integer()
-      .min(100)
-      .max(9999),
+  cardCvv: Joi.number()
+    .integer()
+    .min(100)
+    .max(9999),
 
-    expiry: Joi.string()
-      .pattern(/^(0[1-9]|1[0-2]) \/ \d{2}$/),
-  }),
+  cardExpiry: Joi.string()
+    .pattern(/^(0[1-9]|1[0-2]) \/ \d{2}$/),
 }).unknown(false);
 
 module.exports.signIn = Joi.object({
@@ -35,8 +36,8 @@ module.exports.signIn = Joi.object({
     .required(),
 
   password: Joi.string()
-    .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
-    .message('Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.')
+    .pattern(passwordPattern)
+    .message(passwordMessage)
     .required(),
 }).unknown(false);
 
@@ -44,23 +45,29 @@ module.exports.updateMyInfo = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2 }),
 
-  name: Joi.object({
-    first: Joi.string(),
-    last: Joi.string(),
-  }),
+  firstName: Joi.string().required(),
+
+  lastName: Joi.string().required(),
 
   currentPassword: Joi.string()
-    .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
-    .message('Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.'),
+    .when('newPassword', { is: Joi.exist(), then: Joi.required() })
+    .pattern(passwordPattern)
+    .message(passwordMessage),
 
-  newPassword: Joi.when('currentPassword', {
-    is: Joi.exist(),
-    then: Joi.string()
-      .pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)
-      .message('Password must be at least 8 characters long and contain at least one digit, one lowercase, and one uppercase letter.')
-      .required(),
-    otherwise: Joi.forbidden(),
-  }),
+  newPassword: Joi.string()
+    .pattern(passwordPattern)
+    .message(passwordMessage),
+
+  cardNumber: Joi.string()
+    .pattern(/^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/),
+
+  cardCvv: Joi.number()
+    .integer()
+    .min(100)
+    .max(9999),
+
+  cardExpiry: Joi.string()
+    .pattern(/^(0[1-9]|1[0-2]) \/ \d{2}$/),
 
   image: Joi.object({
     data: Joi.binary().required(),
