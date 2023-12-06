@@ -24,6 +24,7 @@ router.use((err, req, res, next) => {
     res.status(err.status || 500);
   }
   res.json({ message: err.message });
+  console.error(err.message);
 });
 
 module.exports = router;

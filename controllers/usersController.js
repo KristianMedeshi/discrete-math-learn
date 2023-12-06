@@ -36,7 +36,10 @@ module.exports.signIn = async (req, res) => {
 
 module.exports.getMyInfo = async (req, res) => {
   const { id } = req.user;
-  const user = await User.findById(id).select('-password -courses');
+  const user = await User.findById(id).select('-password -courses').lean();
+  delete user._id;
+  delete user.__v;
+  user.fullName = `${user.firstName} ${user.lastName}`;
   user.image = getFullPath(req, user.image);
   res.status(200).json({ user });
 };
