@@ -38,6 +38,7 @@ const userSchema = new Schema(
         return {
           fullName: `${this.firstName} ${this.lastName}`,
           image: getFullPath(req, this.image),
+          id: this._id,
         };
       },
       addToCourses(courseId, passedBlocks = []) {
