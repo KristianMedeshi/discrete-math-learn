@@ -38,6 +38,19 @@ module.exports.getQuestion = async (req, res) => {
   res.status(200).json({ question, answers });
 };
 
+module.exports.updateQuestion = async (req, res) => {
+  const { id } = req.params;
+  const question = await Question.findOne({ _id: id });
+  if (!question) {
+    return res.status(404).json({ message: 'Question is not found.' });
+  }
+  if (question.author.toString() !== req.user.id) {
+    return res.status(403).json({ message: 'You are not the author of this question.' });
+  }
+  await question.updateOne(req.body);
+  res.status(200).json({ message: 'Question has been updated successfully.', id });
+};
+
 module.exports.deleteQuestion = async (req, res) => {
   const { id } = req.params;
   const question = await Question.findOne({ _id: id });
