@@ -6,7 +6,7 @@ const coursesController = require('../controllers/coursesController');
 const router = Router();
 
 router.get('/', coursesController.getCourses);
-router.post('/', auth, upload.single('file'), coursesController.createCourse);
+router.post('/', auth, upload.single('image'), coursesController.createCourse);
 router.get('/my', auth, coursesController.getMyCourses);
 router.get('/:id', auth, coursesController.getCourse);
 router.post('/:id', auth, upload.array('attachments'), coursesController.createCourseBlock);
