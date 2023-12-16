@@ -1,0 +1,32 @@
+{
+  "user": {
+    "exists": "User with the same email already exists",
+    "wrongCredentials": "Wrong email or password",
+    "created": "User has been created successfully",
+    "updated": "User has been updated successfully",
+    "passwordMismatch": "Password does not match"
+  },
+  "question": {
+    "created": "Question has been created successfully",
+    "notFound": "Question not found",
+    "notAuthor": "You are not the author of this question",
+    "updated": "Question has been updated successfully",
+    "deleted": "Question has been deleted successfully",
+    "answer": {
+      "created": "Answer has been added successfully"
+    }
+  },
+  "course": {
+    "created": "Course has been created successfully",
+    "notFound": "Course not found",
+    "notAuthor": "You are not the author of this course",
+    "invalidCard": "User does not have a valid card",
+    "bought": "Course purchased successfully",
+    "chapter": {
+      "created": "Course chapter has been created successfully",
+      "notFound": "Course chapter not found",
+      "marked": "Course chapter marked as complete and added to courses",
+      "answersIncorrect": "Course chapter not completed, answers were incorrect"
+    }
+  }
+}
