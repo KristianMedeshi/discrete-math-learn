@@ -13,10 +13,9 @@ module.exports.signUp = Joi.object({
     .message(passwordMessage)
     .required(),
 
-  name: Joi.object({
-    first: Joi.string().required(),
-    last: Joi.string().required(),
-  }),
+  firstName: Joi.string().required(),
+
+  lastName: Joi.string().required(),
 
   cardNumber: Joi.string()
     .pattern(/^[0-9]{4} [0-9]{4} [0-9]{4} [0-9]{4}$/),
