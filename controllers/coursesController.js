@@ -3,6 +3,7 @@ const Course = require('../models/Course');
 const CourseBlock = require('../models/CourseBlock');
 const validLevels = require('../constants/validLevels');
 const getFullPath = require('../utils/getFullPath');
+const i18n = require('../i18n');
 
 module.exports.getCourses = async (req, res) => {
   const userId = req.user?.id;
@@ -59,7 +60,7 @@ module.exports.createCourse = async (req, res) => {
   const user = await User.findById(author);
   user.addToCourses(newCourse._id);
   await user.save();
-  res.status(201).json({ message: 'Course has been created successfully', id: newCourse._id });
+  res.status(201).json({ message: i18n.__('course.created'), id: newCourse._id });
 };
 
 module.exports.getCourse = async (req, res) => {
@@ -81,7 +82,7 @@ module.exports.buyCourse = async (req, res) => {
   const userId = req.user.id;
   const user = await User.findById(userId).select('courses cardNumber cardCvv cardExpiry');
   if (!user || !user.cardNumber || !user.cardCvv || !user.cardExpiry) {
-    return res.status(400).json({ error: 'User does not have a valid card' });
+    return res.status(400).json({ error: i18n.__('course.invalidCard') });
   }
   const courseId = req.params.id;
   const course = await Course
@@ -92,12 +93,12 @@ module.exports.buyCourse = async (req, res) => {
     )
     .lean();
   if (!course) {
-    return res.status(404).json({ error: 'Course not found' });
+    return res.status(404).json({ error: i18n.__('course.notFound') });
   }
   user.addToCourses(courseId);
   console.log('save', user);
   await user.save();
-  res.status(200).json({ message: 'Course purchased successfully' });
+  res.status(200).json({ message: i18n.__('course.bought') });
 };
 
 module.exports.createCourseBlock = async (req, res) => {
@@ -105,10 +106,10 @@ module.exports.createCourseBlock = async (req, res) => {
   const courseId = req.params.id;
   const course = await Course.findById(courseId);
   if (!course) {
-    return res.status(404).json({ error: 'Course not found' });
+    return res.status(404).json({ error: i18n.__('course.notFound') });
   }
   if (course.author.toString() !== userId) {
-    return res.status(403).json({ error: 'You are not the author of this course' });
+    return res.status(403).json({ error: i18n.__('course.notAuthor') });
   }
   const data = JSON.parse(req.body.jsonData);
   data.course = courseId;
@@ -118,7 +119,7 @@ module.exports.createCourseBlock = async (req, res) => {
   }));
   const newCourseBlock = new CourseBlock(data);
   await newCourseBlock.save();
-  res.status(201).json({ message: 'Course block has been created successfully', id: newCourseBlock._id });
+  res.status(201).json({ message: i18n.__('course.chapter.created'), id: newCourseBlock._id });
 };
 
 module.exports.getCourseBlock = async (req, res) => {
@@ -139,7 +140,7 @@ module.exports.markCourseBlock = async (req, res) => {
   const { answersTests, answersTasks } = req.body;
   const courseBlock = await CourseBlock.findById(courseBlockId).lean();
   if (!courseBlock) {
-    return res.status(404).json({ error: 'Course block not found' });
+    return res.status(404).json({ error: i18n.__('course.chapter.notFound') });
   }
   let correct = 0;
   let total = 0;
@@ -163,9 +164,9 @@ module.exports.markCourseBlock = async (req, res) => {
     const user = await User.findById(userId);
     user.addToCourses(courseBlock.course._id, [courseBlock._id]);
     await user.save();
-    res.status(200).json({ message: 'Course block marked as complete and added to courses', correct, total });
+    res.status(200).json({ message: i18n.__('course.chapter.marked'), correct, total });
   } else {
-    res.status(200).json({ message: 'Course block not completed, answers were incorrect', correct, total });
+    res.status(200).json({ message: i18n.__('course.chapter.answersIncorrect'), correct, total });
   }
 };
 
