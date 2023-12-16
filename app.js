@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config();
 const db = require('./db');
+const i18nMiddleware = require('./middleware/i18nMiddleware');
 const router = require('./routes');
 
 const app = express();
@@ -26,6 +27,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(i18nMiddleware);
 
 app.use(router);
 
