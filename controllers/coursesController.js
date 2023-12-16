@@ -79,9 +79,8 @@ module.exports.getCourse = async (req, res) => {
 
 module.exports.buyCourse = async (req, res) => {
   const userId = req.user.id;
-  const user = await User.findById(userId).select('courses card');
-  console.log(user);
-  if (!user || !user.card || !user.cardNumber || !user.cardCvv || !user.cardExpiry) {
+  const user = await User.findById(userId).select('courses cardNumber cardCvv cardExpiry');
+  if (!user || !user.cardNumber || !user.cardCvv || !user.cardExpiry) {
     return res.status(400).json({ error: 'User does not have a valid card' });
   }
   const courseId = req.params.id;
