@@ -44,9 +44,9 @@ module.exports.updateMyInfo = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2 }),
 
-  firstName: Joi.string().required(),
+  firstName: Joi.string(),
 
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
 
   currentPassword: Joi.string()
     .when('newPassword', { is: Joi.exist(), then: Joi.required() })
@@ -75,4 +75,4 @@ module.exports.updateMyInfo = Joi.object({
     mimetype: Joi.string().valid('image/jpeg', 'image/png').required(),
     size: Joi.number().max(5242880).required(),
   }),
-}).allow(false);
+}).unknown(false);
