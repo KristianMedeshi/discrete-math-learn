@@ -10,6 +10,6 @@ const router = Router();
 router.post('/sign-up', validate(validators.users.signUp), usersController.signUp);
 router.post('/sign-in', usersController.signIn);
 router.get('/users/me', auth, usersController.getMyInfo);
-router.patch('/users/me', auth, upload.single('image'), validate(validators.users.updateMyInfo), usersController.updateMyInfo);
+router.patch('/users/me', auth, validate(validators.users.updateMyInfo), upload.single('image'), usersController.updateMyInfo);
 
 module.exports = router;
